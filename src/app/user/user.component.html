@@ -1,0 +1,90 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span><img src="./assets/images/logo.png"></span>
+    <span class="example-fill-remaining-space"></span>
+    <span class="align-center"></span>
+    <span class="example-spacer"></span>
+
+    <button mat-button>About</button>
+    <button mat-button>Contact</button>
+    <span class="spacer"></span>
+        Reload data:
+    <button mat-icon-button (click)="refresh()">
+        <mat-icon>refresh</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="col-md-6">
+  <h2> User Details</h2>
+  
+  <div>
+
+      <div class="form">
+          <mat-form-field floatPlaceholder="never" color="accent">
+            <input matInput #filter placeholder="Filter issues">
+          </mat-form-field>
+        </div>
+
+
+      <mat-table #table [dataSource]="dataSource" matSort class="mat-cell">
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.id}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.name}} </mat-cell>
+          </ng-container>
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> E-Mail </mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="created_at">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Created at</mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.created_at}}</mat-cell>
+          </ng-container>
+      
+          <ng-container matColumnDef="updated_at">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Updated at</mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.updated_at}}</mat-cell>
+          </ng-container>
+
+          <!-- actions -->
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>
+          <button mat-icon-button color="primary" (click)="addNew()">
+            <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
+          </button>
+        </mat-header-cell>
+  
+        <mat-cell *matCellDef="let user; let i=index;">
+            <button mat-icon-button color="accent" (click)="startEdit(i, user.id, user.name, user.email,  user.created_at, user.updated_at)">
+                <mat-icon aria-label="Edit">edit</mat-icon>
+              </button>
+  
+              <button mat-icon-button color="accent" (click)="deleteItem(i, user.id, user.name, user.email)">
+                  <mat-icon aria-label="Delete">delete</mat-icon>
+                </button>
+        </mat-cell>
+      </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+
+    
+    </div>
+
+    <div class="no-results" [style.display]="dataSource.renderedData.length == 0 ? '' : 'none'">
+        No results
+      </div>
+    
+      <mat-paginator #paginator
+                     [length]="dataSource.filteredData.length"
+                     [pageIndex]="0"
+                     [pageSize]="10"
+                     [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+
+  </div>
