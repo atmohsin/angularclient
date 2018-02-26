@@ -15,6 +15,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import {AddDialogComponent} from '../dialogs/add/add.dialog.component';
 import {EditDialogComponent} from '../dialogs/edit/edit.dialog.component';
 import {DeleteDialogComponent} from '../dialogs/delete/delete.dialog.component';
+import { FlashMessagesService } from 'angular2-flash-messages';
 
 @Component({
   selector: 'app-user',
@@ -30,7 +31,7 @@ export class UserComponent implements OnInit {
 
   constructor(public httpClient: HttpClient,
               public dialog: MatDialog,
-              public dataService: UserService) {}
+              public dataService: UserService,private flashMessagesService: FlashMessagesService) {}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -49,16 +50,19 @@ export class UserComponent implements OnInit {
       data: {user: user }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log( ' After adding .... '+this.dataService.getDialogData());
+    dialogRef.afterClosed().subscribe(result => { 
       if (result === 1) {
         // After dialog is closed we're doing frontend updates
         // For add we're just pushing a new row inside DataService
-        this.exampleDatabase.dataChange.value.push(this.dataService.getDialogData());
-        this.refreshTable();
+        setTimeout(() => {
+            this.exampleDatabase.dataChange.value.push(this.dataService.getDialogData());
+            this.refreshTable();
+        },2000);
       }
     });
   }
+
+  
 
   startEdit(i: number, id: number, name: string, email: string, created_at: string, updated_at: string) {
     this.id = id;
@@ -89,6 +93,7 @@ export class UserComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+    
       if (result === 1) {
         const foundIndex = this.exampleDatabase.dataChange.value.findIndex(x => x.id === this.id);
         // for delete we use splice in order to remove single object from DataService
@@ -117,7 +122,7 @@ export class UserComponent implements OnInit {
   }
 
   public loadData() {
-    this.exampleDatabase = new UserService(this.httpClient);
+    this.exampleDatabase = new UserService(this.httpClient,this.flashMessagesService);
     this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator, this.sort);
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
@@ -169,7 +174,7 @@ export class ExampleDataSource extends DataSource<User> {
     return Observable.merge(...displayDataChanges).map(() => {
       // Filter data
       this.filteredData = this._exampleDatabase.data.slice().filter((user: User) => {
-        console.log(user);
+        console.log('test'+user);
         const searchStr = (user.name + user.email + user.created_at).toLowerCase();
         return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
       });

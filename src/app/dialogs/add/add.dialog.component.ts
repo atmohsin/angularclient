@@ -29,7 +29,7 @@ export class AddDialogComponent {
 
   onSubmit(form: NgForm) {
   // emppty stuff
-  console.log(form.value);
+  console.log('Inside onSubmit function.....');
   }
 
   onNoClick(): void {

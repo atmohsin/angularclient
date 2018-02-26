@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
+import { FlashMessagesService } from 'angular2-flash-messages';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,7 @@ export class UserService {
     
     dialogData: any;
 
-    constructor (private httpClient: HttpClient) {}
+    constructor (private httpClient: HttpClient,private _flashMessagesService: FlashMessagesService) {}
 
     get data(): User[] {
         return this.dataChange.value;
@@ -47,14 +48,20 @@ export class UserService {
     }
 
     addUser( user: User): void {
-        this.dialogData = user;
+        //this.dialogData = user;
         this.httpClient.post(this.API_URL, user).subscribe(data => {
-            console.log(' User added .... ');
-            //this.toasterService.showToaster('Successfully added', 3000);
+            console.log(' User --- added ..... '+JSON.stringify(data.data);
+            var userObj : User;
+            userObj = data.data;
+            console.log(userObj);
+            this.dialogData = userObj;
+            this._flashMessagesService.grayOut(true);
+            this._flashMessagesService.show('User Added Successfully.', { cssClass: 'alert-success', timeout: 3000, showCloseBtn:false });
             },
             (err: HttpErrorResponse) => {
-            console.log(' error while adding user...');
-            //this.toasterService.showToaster('Error occurred. Details: ' + err.name + ' ' + err.message, 8000);
+            console.error(err);
+            this._flashMessagesService.grayOut(true);
+            this._flashMessagesService.show('Error while adding User.', { cssClass: 'alert-danger', timeout: 3000, showCloseBtn:false });
           });
     }
 
@@ -62,13 +69,13 @@ export class UserService {
         this.dialogData = user;
 
         this.httpClient.put(this.API_URL + user.id, user).subscribe(data => {
-            //this.dialogData = kanbanItem;
-            //this.toasterService.showToaster('Successfully edited', 3000);
-            console.log('Updated the user');
+            this._flashMessagesService.grayOut(true);
+            this._flashMessagesService.show('User Updated Successfully.', { cssClass: 'alert-success', timeout: 3000, showCloseBtn:false });
           },
           (err: HttpErrorResponse) => {
-            //this.toasterService.showToaster('Error occurred. Details: ' + err.name + ' ' + err.message, 8000);
-            console.erro(err);
+            console.error(err);
+            this._flashMessagesService.grayOut(true);
+            this._flashMessagesService.show('Error while updating User.', { cssClass: 'alert-danger', timeout: 3000, showCloseBtn:false });
           }
         );
     }
@@ -76,13 +83,13 @@ export class UserService {
     deleteUser ( id: number): void {
         console.log(id);
         this.httpClient.delete(this.API_URL + id).subscribe(data => {
-            console.log(data['']);
-              //this.toasterService.showToaster('Successfully deleted', 3000);
-              console.log(' User deleted..');
+            this._flashMessagesService.grayOut(true);
+            this._flashMessagesService.show('User Deleted Successfully.', { cssClass: 'alert-success', timeout: 3000, showCloseBtn:false });
             },
             (err: HttpErrorResponse) => {
-              //this.toasterService.showToaster('Error occurred. Details: ' + err.name + ' ' + err.message, 8000);
               console.error(err);
+              this._flashMessagesService.grayOut(true);
+            this._flashMessagesService.show('Error while deleting User.', { cssClass: 'alert-danger', timeout: 3000, showCloseBtn:false });
             }
           );
     }
