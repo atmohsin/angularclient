@@ -12,6 +12,7 @@ import {
 } from '@angular/material';
 import {DataService} from './services/data.service';
 import {UserService} from './services/user.service';
+import {AuthenticationService} from './services/authentication.service';
 import {AddDialogComponent} from './dialogs/add/add.dialog.component';
 import {EditDialogComponent} from './dialogs/edit/edit.dialog.component';
 import {DeleteDialogComponent} from './dialogs/delete/delete.dialog.component';
@@ -20,7 +21,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { UserComponent } from './user/user.component';
 import { LoginComponent } from './login/login.component';
 import { FlashMessagesModule } from 'angular2-flash-messages';
-
+import { PageNotFoundComponent } from './not-found.component';
+import { JwtModule } from '@auth0/angular-jwt';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
     EditDialogComponent,
     DeleteDialogComponent,
     UserComponent,
-    LoginComponent
+    LoginComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -40,6 +43,20 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
     ReactiveFormsModule,
     ExampleMaterialModule,
     FlashMessagesModule.forRoot(),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          let currentUser = localStorage.getItem('currentUser');
+          if( currentUser) {
+            let token = JSON.parse(currentUser).token;
+            console.log( ' token '+token);
+            return token;
+          }
+          
+        },
+        whitelistedDomains: ['localhost:8000','localhost:4200','fonts.googleapis.com']
+      }
+    }),
   ],
   entryComponents: [
     AddDialogComponent,
@@ -48,7 +65,8 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
   ],
   providers: [
     DataService,
-    UserService
+    UserService,
+    AuthenticationService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UserService } from '../services/user.service';
+import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../models/user';
 import {DataSource} from '@angular/cdk/collections';
 import { Observable } from "rxjs/Rx";
@@ -16,6 +17,7 @@ import {AddDialogComponent} from '../dialogs/add/add.dialog.component';
 import {EditDialogComponent} from '../dialogs/edit/edit.dialog.component';
 import {DeleteDialogComponent} from '../dialogs/delete/delete.dialog.component';
 import { FlashMessagesService } from 'angular2-flash-messages';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -31,7 +33,9 @@ export class UserComponent implements OnInit {
 
   constructor(public httpClient: HttpClient,
               public dialog: MatDialog,
-              public dataService: UserService,private flashMessagesService: FlashMessagesService) {}
+              public dataService: UserService,private flashMessagesService: FlashMessagesService,
+              public authenticationService: AuthenticationService,
+              private router : Router) {}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -43,6 +47,11 @@ export class UserComponent implements OnInit {
 
   refresh() {
     this.loadData();
+  }
+
+  logout() {
+    this.authenticationService.logout();
+    this.router.navigate(['/']);
   }
 
   addNew(user: User) {

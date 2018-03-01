@@ -50,7 +50,6 @@ export class UserService {
     addUser( user: User): void {
         //this.dialogData = user;
         this.httpClient.post(this.API_URL, user).subscribe(data => {
-            console.log(' User --- added ..... '+JSON.stringify(data.data);
             var userObj : User;
             userObj = data.data;
             console.log(userObj);
