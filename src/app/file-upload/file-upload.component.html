@@ -1,0 +1,35 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span><img src="./assets/images/logo.png"></span>
+  
+      <span class="example-fill-remaining-space"></span>
+      
+      <button mat-button><a  class="spacer" mat-icon-button [routerLink]="['/user']">User</a></button>
+      <button mat-button><a  class="spacer" mat-icon-button [routerLink]="['/upload']">Upload</a></button>
+      
+      <button class="spacer" mat-icon-button (click)="logout()">
+          Logout
+       </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+
+<div class="form-group">
+
+    <div class="file-upload">
+        <span class="text">upload</span>
+        <input id="custom-input" type="file" (change)="fileChangeListener($event)">
+    </div>
+    <img-cropper #cropper [image]="data" [settings]="cropperSettings"></img-cropper>
+    <br>
+    <span class="result rounded" *ngIf="data.image" >
+        <img [src]="data.image" [width]="cropperSettings.croppedWidth" [height]="cropperSettings.croppedHeight">
+    </span>
+
+    
+</div>
+
+<button type="button" class="btn btn-success btn-s"
+           (click)="uploadFile()">
+       <span class="glyphicon glyphicon-upload"></span> Upload all
+   </button> 

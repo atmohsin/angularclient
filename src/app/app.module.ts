@@ -23,6 +23,10 @@ import { LoginComponent } from './login/login.component';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { PageNotFoundComponent } from './not-found.component';
 import { JwtModule } from '@auth0/angular-jwt';
+import { AuthGuard } from './guards/auth.guards';
+import { FileUploadComponent } from './file-upload/file-upload.component';
+import { FileService } from './services/file.service';
+import {ImageCropperComponent, CropperSettings, Bounds} from 'ng2-img-cropper';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,9 @@ import { JwtModule } from '@auth0/angular-jwt';
     DeleteDialogComponent,
     UserComponent,
     LoginComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    FileUploadComponent,
+    ImageCropperComponent
   ],
   imports: [
     BrowserModule,
@@ -64,9 +70,11 @@ import { JwtModule } from '@auth0/angular-jwt';
     DeleteDialogComponent
   ],
   providers: [
+    AuthGuard,
+    AuthenticationService,
     DataService,
     UserService,
-    AuthenticationService
+    FileService
   ],
   bootstrap: [AppComponent]
 })
